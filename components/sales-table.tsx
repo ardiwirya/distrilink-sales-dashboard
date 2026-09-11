@@ -14,7 +14,9 @@ export function SalesTable({ data }: SalesTableProps) {
             <tr className="border-b border-border text-muted">
               <th className="px-4 py-3 font-medium">Nama Sales</th>
               <th className="px-4 py-3 font-medium">Area</th>
-              <th className="px-4 py-3 font-medium">Kunjungan (Realisasi/Target)</th>
+              <th className="px-4 py-3 font-medium">
+                Kunjungan (Realisasi/Target)
+              </th>
               <th className="px-4 py-3 font-medium">Efektivitas</th>
               <th className="px-4 py-3 font-medium">Total Order</th>
               <th className="px-4 py-3 font-medium">Order OOS</th>
@@ -22,7 +24,10 @@ export function SalesTable({ data }: SalesTableProps) {
           </thead>
           <tbody>
             {data.map((sales) => (
-              <tr key={sales.namaSales} className="border-b border-border last:border-0">
+              <tr
+                key={sales.namaSales}
+                className="border-b border-border last:border-0"
+              >
                 <td className="px-4 py-3 font-medium text-foreground">
                   {sales.namaSales}
                 </td>
@@ -30,8 +35,8 @@ export function SalesTable({ data }: SalesTableProps) {
                 <td className="px-4 py-3 text-muted">
                   {sales.kunjunganRealisasi} / {sales.kunjunganPlanned}
                 </td>
-                <td className="px-4 py-3 text-muted">
-                  {formatPercent(sales.efektivitasVisitPersen)}
+                <td className="px-4 py-3">
+                  <EfektivitasBadge value={sales.efektivitasVisitPersen} />
                 </td>
                 <td className="px-4 py-3 text-muted">
                   {formatRupiah(sales.totalOrderRp)}
@@ -51,6 +56,26 @@ export function SalesTable({ data }: SalesTableProps) {
         </p>
       )}
     </div>
+  );
+}
+
+// Threshold sederhana: di bawah 70% = perlu perhatian, 70-84% = cukup,
+// 85% ke atas = bagus. Angka batasnya asumsi saya sendiri (tidak diatur di
+// dokumen test case), cukup untuk kebutuhan prototype ini.
+function EfektivitasBadge({ value }: { value: number }) {
+  const colorClass =
+    value < 70
+      ? "bg-warning/10 text-warning"
+      : value < 85
+        ? "bg-brand-500/10 text-brand-700"
+        : "bg-success/10 text-success";
+
+  return (
+    <span
+      className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClass}`}
+    >
+      {formatPercent(value)}
+    </span>
   );
 }
 
