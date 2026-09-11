@@ -32,15 +32,21 @@ export function calculateSalesSummary(data: SalesPerformance[]): SalesSummary {
 export function filterSalesPerformance(
   data: SalesPerformance[],
   searchTerm: string,
-  area: string
+  area: string,
 ): SalesPerformance[] {
-  return data.filter((sales) => {
+  const filtered = data.filter((sales) => {
     const matchesSearch = sales.namaSales
       .toLowerCase()
       .includes(searchTerm.trim().toLowerCase());
     const matchesArea = area === "Semua Area" || sales.area === area;
     return matchesSearch && matchesArea;
   });
+
+  // Sales dengan efektivitas terendah ditampilkan duluan, supaya supervisor
+  // langsung lihat siapa yang butuh perhatian tanpa harus scroll cari sendiri.
+  return filtered.sort(
+    (a, b) => a.efektivitasVisitPersen - b.efektivitasVisitPersen,
+  );
 }
 
 export function getAreaOptions(data: SalesPerformance[]): string[] {
